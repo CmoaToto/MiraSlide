@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <Button
+        android:id="@+id/fragment_selection_button_choosepdf"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:text="@string/choose_pdf_file"
+        android:background="@drawable/button_green" />
+
+    <Button
+        android:id="@+id/fragment_selection_button_selectwirelessdisplay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:text="@string/select_wireless_display"
+        android:background="@drawable/button_green" />
+
+    <Button
+        android:id="@+id/fragment_selection_button_launchprojection"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:text="@string/launch_projection"
+        android:background="@drawable/button_green" />
+
+</LinearLayout>
