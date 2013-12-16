@@ -8,8 +8,7 @@
         android:minSdkVersion="17"
         android:targetSdkVersion="19" />
 
-    <permission android:name="android.permission.READ_EXTERNAL_STORAGE" >
-    </permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application android:name="fr.cmoatoto.miraslide.MiraSlideApplication"
         android:allowBackup="true"
