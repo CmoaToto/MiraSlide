@@ -214,17 +214,21 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 	/** Return the filename from a uri. It doesn't work all the time... (it depends where the file comes from and
 	 * what information it contains when we receive it) */
 	private String getFilename(Uri uri) {
-		String scheme = uri.getScheme();
-		if (scheme.equals("file")) {
-			return uri.getLastPathSegment();
-		} else if (scheme.equals("content")) {
-			String[] proj = { MediaStore.Files.FileColumns.TITLE };
-			Cursor cursor = mActivity.getContentResolver().query(uri, proj, null, null, null);
-			if (cursor != null && cursor.getCount() != 0) {
-				int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE);
-				cursor.moveToFirst();
-				return cursor.getString(columnIndex);
+		try {
+			String scheme = uri.getScheme();
+			if (scheme.equals("file")) {
+				return uri.getLastPathSegment();
+			} else if (scheme.equals("content")) {
+				String[] proj = { MediaStore.Files.FileColumns.TITLE };
+				Cursor cursor = mActivity.getContentResolver().query(uri, proj, null, null, null);
+				if (cursor != null && cursor.getCount() != 0) {
+					int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE);
+					cursor.moveToFirst();
+					return cursor.getString(columnIndex);
+				}
 			}
+		} catch (Exception e) {
+			// TODO Find a way to retrieve the file name from the MediaStore
 		}
 		return null;
 	}
