@@ -9,7 +9,7 @@ import android.widget.Chronometer;
  * This is just a Chronometer class but the TextSize will adapt itself as the height of the view.
  * 
  * @author CmoaToto
- *
+ * 
  */
 public class MyChronometer extends Chronometer {
 
@@ -24,7 +24,7 @@ public class MyChronometer extends Chronometer {
 	public MyChronometer(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
-	
+
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);

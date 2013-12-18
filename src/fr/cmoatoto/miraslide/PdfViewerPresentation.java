@@ -45,7 +45,7 @@ public class PdfViewerPresentation extends Presentation {
 
 	/** Current page */
 	private int mPage = 0;
-	
+
 	/** Sizes of all the pages of the pdf */
 	private int[][] pagesSize;
 

@@ -31,11 +31,9 @@ import fr.cmoatoto.miraslide.MainActivity;
 import fr.cmoatoto.miraslide.R;
 
 /**
- * This fragment is the first fragment the user see. Its goal is to select the pdf and the display to show, then launch
- * the presentation.
- * <br><br>
- * The 3 buttons react to the state of if the elements (pdf and display) are selected or not, and if the projection
- * can be launch.
+ * This fragment is the first fragment the user see. Its goal is to select the pdf and the display to show, then launch the presentation. <br>
+ * <br>
+ * The 3 buttons react to the state of if the elements (pdf and display) are selected or not, and if the projection can be launch.
  * 
  * @author CmoaToto
  */
@@ -73,11 +71,11 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 
 		return v;
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+
 		// At resuming, we check the state of each buttons.
 		checkLaunchable(getView());
 	}
@@ -158,8 +156,9 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 		}
 	}
 
-	/** We check the state of the external displays, update the text of the display button, and if there is only
-	 * one extenral display, we auto select it */
+	/**
+	 * We check the state of the external displays, update the text of the display button, and if there is only one extenral display, we auto select it
+	 */
 	private void checkDisplay(TextView displayButton) {
 		Display[] displays = mDisplayManager.getDisplays(DisplayManager.DISPLAY_CATEGORY_PRESENTATION);
 
@@ -174,13 +173,15 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 		}
 	}
 
-	/** We check the selection of the pdf file and the display, and we update the color of the buttons and if the "launch
-	 * projection" button should be enable 
-	 * @param v : the global view of the fragment
+	/**
+	 * We check the selection of the pdf file and the display, and we update the color of the buttons and if the "launch projection" button should be enable
+	 * 
+	 * @param v
+	 *            : the global view of the fragment
 	 */
 	private void checkLaunchable(View v) {
 		checkDisplay((TextView) v.findViewById(R.id.fragment_selection_button_selectwirelessdisplay));
-		
+
 		if (mActivity.getPdfPath() != null) {
 			v.findViewById(R.id.fragment_selection_button_choosepdf).setBackgroundResource(R.drawable.button_green);
 		} else {
@@ -211,8 +212,10 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 		}
 	}
 
-	/** Return the filename from a uri. It doesn't work all the time... (it depends where the file comes from and
-	 * what information it contains when we receive it) */
+	/**
+	 * Return the filename from a uri. It doesn't work all the time... (it depends where the file comes from and what information it contains when we receive
+	 * it)
+	 */
 	private String getFilename(Uri uri) {
 		try {
 			String scheme = uri.getScheme();
@@ -233,11 +236,14 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 		return null;
 	}
 
-	/** Copy the content of the file pointed by the uri to a file in the application data folder.
+	/**
+	 * Copy the content of the file pointed by the uri to a file in the application data folder.
 	 * 
-	 * @param uri : The uri of the file to store
+	 * @param uri
+	 *            : The uri of the file to store
 	 * 
-	 * @return the File created, the copy from the file pointed by the uri. */
+	 * @return the File created, the copy from the file pointed by the uri.
+	 */
 	private File storeUriContentToFile(Uri uri) {
 		File file = null;
 		try {
@@ -265,7 +271,7 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 
 	// Methods called when a display is added or removed. We change the button state if we add or remove a
 	// display, and we stop the presentation if there is a display removed.
-	
+
 	@Override
 	public void onDisplayAdded(int displayId) {
 		checkLaunchable(getView());

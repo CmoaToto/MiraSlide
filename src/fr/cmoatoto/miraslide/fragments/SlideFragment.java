@@ -12,8 +12,7 @@ import fr.cmoatoto.miraslide.PdfViewerPresentation;
 import fr.cmoatoto.miraslide.R;
 
 /**
- * This fragment is only an ImageView, the same as the {@link PdfViewerPresentation}, but with a white background.
- * <br>
+ * This fragment is only an ImageView, the same as the {@link PdfViewerPresentation}, but with a white background. <br>
  * It gets the number of the page as argument, then get the appropriate bitmap from the pdf.
  * 
  * @author CmoaToto
