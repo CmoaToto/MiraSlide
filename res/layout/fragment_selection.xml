@@ -16,6 +16,16 @@
         android:background="@drawable/button_green" />
 
     <Button
+        android:id="@+id/fragment_selection_button_choosenotes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:text="@string/choose_notes_file"
+        android:background="@drawable/button_green" />
+
+    <Button
         android:id="@+id/fragment_selection_button_selectwirelessdisplay"
         android:layout_width="match_parent"
         android:layout_height="0dp"

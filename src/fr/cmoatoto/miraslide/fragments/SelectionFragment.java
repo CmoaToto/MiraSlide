@@ -1,7 +1,9 @@
 package fr.cmoatoto.miraslide.fragments;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -19,6 +21,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,8 +42,13 @@ import fr.cmoatoto.miraslide.R;
  */
 public class SelectionFragment extends Fragment implements OnClickListener, DisplayListener {
 
+	private static final String TAG = SelectionFragment.class.getName();
+
 	/** Code for the ActivityForResult for the PDF file selection */
-	public static int SELECT_FILE_INTENT_RESULT_CODE = 712;
+	public static int SELECT_PDF_FILE_INTENT_RESULT_CODE = 712;
+
+	/** Code for the ActivityForResult for the Speaker's notes file selection */
+	public static int SELECT_NOTES_FILE_INTENT_RESULT_CODE = 713;
 
 	/** The display manager is the object to get informations about the different displays */
 	private DisplayManager mDisplayManager;
@@ -66,6 +74,7 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 		View v = inflater.inflate(R.layout.fragment_selection, container, false);
 
 		v.findViewById(R.id.fragment_selection_button_choosepdf).setOnClickListener(this);
+		v.findViewById(R.id.fragment_selection_button_choosenotes).setOnClickListener(this);
 		v.findViewById(R.id.fragment_selection_button_selectwirelessdisplay).setOnClickListener(this);
 		v.findViewById(R.id.fragment_selection_button_launchprojection).setOnClickListener(this);
 
@@ -88,7 +97,15 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 			intent.setAction(Intent.ACTION_GET_CONTENT);
 			intent.addCategory(Intent.CATEGORY_OPENABLE);
 			intent.setType("application/pdf");
-			startActivityForResult(Intent.createChooser(intent, "Select PDF"), SELECT_FILE_INTENT_RESULT_CODE);
+			startActivityForResult(Intent.createChooser(intent, "Select PDF"), SELECT_PDF_FILE_INTENT_RESULT_CODE);
+
+		} else if (v.getId() == R.id.fragment_selection_button_choosenotes) {
+			// On click on the "select notes" button, we launch a file explorer to let the user select the speaker's notes file.
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_GET_CONTENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("text/*");
+			startActivityForResult(Intent.createChooser(intent, "Select Speaker's notes"), SELECT_NOTES_FILE_INTENT_RESULT_CODE);
 
 		} else if (v.getId() == R.id.fragment_selection_button_selectwirelessdisplay) {
 			// On click on the "select display" button, we check if there is external display connected.
@@ -131,8 +148,8 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Activity.RESULT_OK) {
-			if (requestCode == SELECT_FILE_INTENT_RESULT_CODE) {
-				// When the user has selected a file through a file explorer, we try to copy the file
+			if (requestCode == SELECT_PDF_FILE_INTENT_RESULT_CODE) {
+				// When the user has selected a pdf file through a file explorer, we try to copy the file
 				// in the application data folder and check if the file can be read.
 				// If everything is ok, we store the path of the file (the one in the app data folder) and
 				// update the buttons state.
@@ -147,6 +164,26 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 						Toast.makeText(mActivity, "File loaded : " + pdfName, Toast.LENGTH_SHORT).show();
 						((TextView) getView().findViewById(R.id.fragment_selection_button_choosepdf)).setText("File " + pdfName + " loaded");
 						mActivity.setPdfPath(pdfFile.getAbsolutePath());
+						checkLaunchable(getView());
+					}
+				} else {
+					Toast.makeText(mActivity, "Invalid file data", Toast.LENGTH_SHORT).show();
+				}
+			} else if (requestCode == SELECT_NOTES_FILE_INTENT_RESULT_CODE) {
+				// When the user has selected a speaker's note file through a file explorer, we try to parse the file
+				// to create notes.
+				// If everything is ok, we update the buttons state.
+				Uri dataUri = data.getData();
+
+				if (data != null && dataUri.getPath() != null) {
+					String notesName = getFilename(dataUri);
+					SparseArray<String> notes = parseNotesFile(dataUri);
+					if (notes == null || notes.size() == 0) {
+						Toast.makeText(mActivity, "Can't read notes", Toast.LENGTH_SHORT).show();
+					} else {
+						Toast.makeText(mActivity, "Speaker's Notes loaded : " + notesName, Toast.LENGTH_SHORT).show();
+						((TextView) getView().findViewById(R.id.fragment_selection_button_choosenotes)).setText("Speaker's Notes  " + notesName + " loaded");
+						mActivity.setNotes(notes);
 						checkLaunchable(getView());
 					}
 				} else {
@@ -188,6 +225,12 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 			v.findViewById(R.id.fragment_selection_button_choosepdf).setBackgroundResource(R.drawable.button_red);
 		}
 
+		if (mActivity.getNotes() != null && mActivity.getNotes().size() > 0) {
+			v.findViewById(R.id.fragment_selection_button_choosenotes).setBackgroundResource(R.drawable.button_green);
+		} else {
+			v.findViewById(R.id.fragment_selection_button_choosenotes).setBackgroundResource(R.drawable.button_orange);
+		}
+
 		if (mActivity.getDislay() != null) {
 			v.findViewById(R.id.fragment_selection_button_selectwirelessdisplay).setBackgroundResource(R.drawable.button_green);
 		} else {
@@ -205,6 +248,8 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 		// We try to set the focus to the most important button
 		if (mActivity.getPdfPath() == null) {
 			v.findViewById(R.id.fragment_selection_button_choosepdf).requestFocusFromTouch();
+		} else if (mActivity.getNotes() == null || mActivity.getNotes().size() == 0) {
+			v.findViewById(R.id.fragment_selection_button_choosenotes).requestFocusFromTouch();
 		} else if (mActivity.getDislay() == null) {
 			v.findViewById(R.id.fragment_selection_button_selectwirelessdisplay).requestFocusFromTouch();
 		} else {
@@ -213,8 +258,7 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 	}
 
 	/**
-	 * Return the filename from a uri. It doesn't work all the time... (it depends where the file comes from and what information it contains when we receive
-	 * it)
+	 * Return the filename from a uri.
 	 */
 	private String getFilename(Uri uri) {
 		try {
@@ -222,16 +266,16 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 			if (scheme.equals("file")) {
 				return uri.getLastPathSegment();
 			} else if (scheme.equals("content")) {
-				String[] proj = { MediaStore.Files.FileColumns.TITLE };
+				String[] proj = { MediaStore.Files.FileColumns.DISPLAY_NAME };
 				Cursor cursor = mActivity.getContentResolver().query(uri, proj, null, null, null);
 				if (cursor != null && cursor.getCount() != 0) {
-					int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE);
+					int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME);
 					cursor.moveToFirst();
 					return cursor.getString(columnIndex);
 				}
 			}
 		} catch (Exception e) {
-			// TODO Find a way to retrieve the file name from the MediaStore
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -267,6 +311,85 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 			Log.e("OpenFile", e.getMessage(), e);
 		}
 		return file;
+	}
+
+	/**
+	 * Parse the content of the file pointed by the Uri.<br>
+	 * <br>
+	 * The file <b>can be a plain text file</b>. Then each note should be delimited by the tags <code>&lt;page=#&gt;</pre></code> (where # is the n° of the slide, starting at 1) and <code>&lt;/page&gt;</code><br>
+	 * <br>
+	 * It <b>can also be an html file from Google Drive Presentation</b>. To get it :
+	 * <ul><li>Open your Google Drive Presentation (from a desktop browser). Your should have write your Speaker's notes in your presentation.</li>
+	 * <li>Click on <b>View</b> --> <b>Html View</b> (or Ctrl-Alt-Maj-H)
+	 * <li><b>Right-Click</b> --> <b>Save as...</b> then save your file.
+	 * </ul>
+	 * 
+	 * @param uri: The uri to the Speaker's notes
+	 * @return the notes parsed in a SparseArray
+	 */
+	private SparseArray<String> parseNotesFile(Uri uri) {
+		SparseArray<String> notes = new SparseArray<String>();
+
+		String allFile = "";
+		InputStream is = null;
+
+		// Save all the inputStream from the Uri in a big String : allFile
+		try {
+			try {
+				is = mActivity.getContentResolver().openInputStream(uri);
+
+				java.util.Scanner s = new java.util.Scanner(is);
+				s.useDelimiter("\\A");
+				allFile = s.hasNext() ? s.next() : "";
+				s.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				is.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		int page;
+		String split[];
+		if (allFile.contains("<html") && allFile.contains("</html>")) {
+			// If the file is a Google Presentation Html file
+			notes.append(-2, "html");
+
+			if (!allFile.contains("<article")) {
+				return notes;
+			}
+			allFile = allFile.substring(allFile.indexOf("<article"));
+
+			while (allFile.length() > 0 && allFile.indexOf("<article") != -1) {
+				allFile = allFile.substring(allFile.indexOf("<article")).split("title=\"Slide ", 2)[1];
+				if ((allFile.indexOf("<article") != -1 && allFile.substring(0, allFile.indexOf("<article")).contains("Speaker notes"))
+						|| (allFile.indexOf("<article") == -1 && allFile.contains("Speaker notes"))) {
+					split = allFile.split("\"", 2);
+					page = -1;
+					page = Integer.valueOf(split[0]);
+					split = split[1].split("<section class=\"slide-notes\" title=\"Speaker notes\">", 2)[1].split("</section>", 2);
+
+					notes.append(page, split[0]);
+					Log.d(TAG, "Loaded note " + page + " : " + split[0]);
+					allFile = split[1];
+				}
+			}
+		} else {
+			// If the file is a plain text file
+			notes.append(-2, "plain");
+			while (allFile.length() > 0 && allFile.contains("<page=") && allFile.contains(">")) {
+				allFile = allFile.substring(allFile.indexOf("<page=") + "<page=".length());
+				split = allFile.split(">", 2);
+				page = -1;
+				page = Integer.valueOf(split[0]);
+				notes.append(page, split[1].split("</page>", 2)[0]);
+				allFile = allFile.substring("<page=X>".length());
+			}
+		}
+
+		return notes;
 	}
 
 	// Methods called when a display is added or removed. We change the button state if we add or remove a

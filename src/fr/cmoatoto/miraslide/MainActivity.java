@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +55,9 @@ public class MainActivity extends FragmentActivity {
 	/** The path to the pdf file to show. In fact it is always the same path, as we copy the file in an internal folder */
 	private String mPdfPath;
 
+	/** The speaker's notes. Each item equals the notes for the associated page */
+	private SparseArray<String> mNotes = new SparseArray<String>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,7 +92,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		// creation of the show/hide controller fragment menu button
+		// creation of the show/hide controller fragment menu buttonPdfPath
 		mShowHideControllerActionBarButton = menu.add(Menu.NONE, 1, Menu.NONE, "Control slides");
 		mShowHideControllerActionBarButton.setIcon(R.drawable.ic_action_keyboard);
 		mShowHideControllerActionBarButton.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -209,6 +213,16 @@ public class MainActivity extends FragmentActivity {
 	/** set the path to the pdf file */
 	public void setPdfPath(String pdfPath) {
 		this.mPdfPath = pdfPath;
+	}
+
+	/** return the path to the speaker's notes */
+	public SparseArray<String> getNotes() {
+		return mNotes;
+	}
+
+	/** set the speaker's notes */
+	public void setNotes(SparseArray<String> notes) {
+		this.mNotes = notes;
 	}
 
 }

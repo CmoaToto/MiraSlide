@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" >
+
+    <ImageView
+        android:id="@+id/fragment_slide_imageview_slide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter" />
+
+    <ScrollView
+        android:id="@+id/fragment_slide_scrollview_note"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <WebView
+                android:id="@+id/fragment_slide_textview_note_html"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/fragment_slide_textview_note_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/fragment_slide_button_switchview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_action_picture" />
+
+    <ImageButton
+        android:id="@+id/fragment_slide_button_zoomout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_action_zoomout" />
+
+    <ImageButton
+        android:id="@+id/fragment_slide_button_zoomin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/fragment_slide_button_zoomout"
+        android:src="@drawable/ic_action_zoomin" />
+
+</RelativeLayout>

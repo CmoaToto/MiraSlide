@@ -6,6 +6,10 @@
     <color name="green_alpha">#59C0</color>
     <color name="green_dark">#690</color>
 
+    <color name="orange">#fb3</color>
+    <color name="orange_alpha">#5fb3</color>
+    <color name="orange_dark">#f80</color>
+
     <color name="red">#f44</color>
     <color name="red_alpha">#5f44</color>
     <color name="red_dark">#c00</color>

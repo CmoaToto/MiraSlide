@@ -5,6 +5,8 @@
 
     <string name="choose_pdf_file">Choose a PDF File</string>
 
+    <string name="choose_notes_file">Choose a Text File with Speaker\'s notes</string>
+
     <string name="select_wireless_display">Select Wireless Display</string>
 
     <string name="launch_projection">Launch Projection</string>
