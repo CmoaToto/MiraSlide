@@ -75,6 +75,7 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 
 		v.findViewById(R.id.fragment_selection_button_choosepdf).setOnClickListener(this);
 		v.findViewById(R.id.fragment_selection_button_choosenotes).setOnClickListener(this);
+		v.findViewById(R.id.fragment_selection_button_choosenotes_info).setOnClickListener(this);
 		v.findViewById(R.id.fragment_selection_button_selectwirelessdisplay).setOnClickListener(this);
 		v.findViewById(R.id.fragment_selection_button_launchprojection).setOnClickListener(this);
 
@@ -106,6 +107,12 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 			intent.addCategory(Intent.CATEGORY_OPENABLE);
 			intent.setType("text/*");
 			startActivityForResult(Intent.createChooser(intent, "Select Speaker's notes"), SELECT_NOTES_FILE_INTENT_RESULT_CODE);
+
+		} else if (v.getId() == R.id.fragment_selection_button_choosenotes_info) {
+			// On click on the "info button" of the "select notes" button, we show a dialog to explain how to load notes.
+			AlertDialog.Builder builder = new AlertDialog.Builder(mActivity).setIcon(R.drawable.ic_launcher).setTitle("How to select Speaker's notes")
+					.setNeutralButton("Ok", null).setMessage(getText(R.string.choose_notes_file_info));
+			builder.show();
 
 		} else if (v.getId() == R.id.fragment_selection_button_selectwirelessdisplay) {
 			// On click on the "select display" button, we check if there is external display connected.
@@ -316,15 +323,18 @@ public class SelectionFragment extends Fragment implements OnClickListener, Disp
 	/**
 	 * Parse the content of the file pointed by the Uri.<br>
 	 * <br>
-	 * The file <b>can be a plain text file</b>. Then each note should be delimited by the tags <code>&lt;page=#&gt;</pre></code> (where # is the n° of the slide, starting at 1) and <code>&lt;/page&gt;</code><br>
+	 * The file <b>can be a plain text file</b>. Then each note should be delimited by the tags <code>&lt;page=#&gt;</code> (where # is the n° of the
+	 * slide, starting at 1) and <code>&lt;/page&gt;</code><br>
 	 * <br>
 	 * It <b>can also be an html file from Google Drive Presentation</b>. To get it :
-	 * <ul><li>Open your Google Drive Presentation (from a desktop browser). Your should have write your Speaker's notes in your presentation.</li>
+	 * <ul>
+	 * <li>Open your Google Drive Presentation (from a desktop browser). You should have write your Speaker's notes in your presentation.</li>
 	 * <li>Click on <b>View</b> --> <b>Html View</b> (or Ctrl-Alt-Maj-H)
 	 * <li><b>Right-Click</b> --> <b>Save as...</b> then save your file.
 	 * </ul>
 	 * 
-	 * @param uri: The uri to the Speaker's notes
+	 * @param uri
+	 *            : The uri to the Speaker's notes
 	 * @return the notes parsed in a SparseArray
 	 */
 	private SparseArray<String> parseNotesFile(Uri uri) {
