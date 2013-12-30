@@ -30,7 +30,7 @@ public class SlideFragment extends Fragment {
 
 		View v = getActivity().getLayoutInflater().inflate(R.layout.fragment_slide, null);
 
-		final boolean html = ((MainActivity) getActivity()).getNotes().get(-2).equals("html");
+		final boolean html = ((MainActivity) getActivity()).getNotes().get(-2) != null && ((MainActivity) getActivity()).getNotes().get(-2).equals("html");
 
 		// On Click on the SwitchView button, we switch between the slide view and the notes view.
 		v.findViewById(R.id.fragment_slide_button_switchview).setOnClickListener(new OnClickListener() {
